@@ -23,7 +23,7 @@ export default function PaginaInicial() {
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [local, setLocal] = useState('');
-  const [userImage, setUserImage] = useState('');
+  const [userImage, setUserImage] = useState('https://github.com/fghi.png');
   const roteamento = useRouter();
 
   const handlerGetUserGitHub = event => {
