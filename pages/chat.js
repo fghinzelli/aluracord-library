@@ -1,19 +1,46 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMzOTQ5MiwiZXhwIjoxOTU4OTE1NDkyfQ.N0MNWzAxsMMVtqO37ppn1blpawjBG9c0hP1o1aCogbw';
+const SUPABASE_URL = 'https://zdfkualwmszbbmjxpups.supabase.co'
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = useState('')
   const [listaDeMensagens, setListaDeMensagens] = useState([]);
 
+  useEffect(() => {
+    const dadosDoSupabase = supabaseClient
+    .from('mensagens')
+    .select('*')
+    .order('id', {ascending: false})
+    .then(({ data }) => {
+      console.log(data)
+      setListaDeMensagens(data);
+    });
+  }, [])
+
   function handleNovaMensagem(novaMensagem) {
     const msg = {
-      id: listaDeMensagens.length,
       de: 'fghinzelli',
       texto: novaMensagem
     }
+
+    supabaseClient
+      .from('mensagens')
+      .insert([msg])
+      .then(resposta => {
+        setListaDeMensagens([
+          data[0],
+          ...listaDeMensagens])
+      })
+
     setMensagem('')
-    setListaDeMensagens([msg, ...listaDeMensagens])
+    
   }
 
   function handleRemoverMensagem(mensagem) {
